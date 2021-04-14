@@ -17,7 +17,7 @@ namespace UserClient
     {
 
         static string userName;
-        private const string host = "193.138.146.14";//193.138.146.14 //192.168.10.64
+        private const string host = "192.168.10.64";//193.138.146.14 //192.168.10.64
         private const int port = 4444;
         static TcpClient client;
         static NetworkStream stream;
@@ -109,15 +109,20 @@ namespace UserClient
                         Regex gettext = new Regex(@"(.*);endmessage");
                         Regex gettime = new Regex(@"timestamp:(\d*)");
                         Regex getsender = new Regex(@"sender:(\w*)");
+                        Regex gettarget = new Regex(@"target:(\w*)");
+                     
                         MatchCollection matches = gettype.Matches(message);
                         string status = matches[0].Value.Split(':')[1];
                         string text = gettext.Match(message).Value.Split(';')[0];
                         string sender = getsender.Match(message).Value.Split(':')[1];
+                        string target = gettarget.Match(message).Value.Split(':')[1];
                         int time = Convert.ToInt32(gettime.Match(message).Value.Split(':')[1]);
                         if (status == "login")
                         {
-
-                            UpdateUserList(text);
+                            if (target == "all")
+                                UpdateAndResponse(text);
+                            else
+                                UpdateUserList(text);
                             WriteMessage(text + " has joined chat!" + '\n');
                         }
                         else if (status == "recieve")
@@ -160,13 +165,23 @@ namespace UserClient
                 this.Invoke(new Action<string>(UpdateUserList), new object[] { text });
                 return;
             }
-            if(text != userName)
+            
+            
+            selectuser.Items.Add(text);
+        }
+        public void UpdateAndResponse(string text)
+        {
+            if (this.InvokeRequired)
             {
+                this.Invoke(new Action<string>(UpdateAndResponse), new object[] { text });
+                return;
+            }
+            
                 string message = userName + FormatLine("login", text);
                 byte[] data = Encoding.Unicode.GetBytes(message);
                 stream.Write(data, 0, data.Length);
-            }
             
+
             selectuser.Items.Add(text);
         }
 
