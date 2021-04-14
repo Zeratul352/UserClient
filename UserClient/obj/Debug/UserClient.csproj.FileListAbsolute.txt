@@ -1,0 +1,9 @@
+C:\Users\Andrey\source\repos\UserClient\UserClient\obj\Debug\UserClient.csprojAssemblyReference.cache
+C:\Users\Andrey\source\repos\UserClient\UserClient\obj\Debug\UserClient.csproj.CoreCompileInputs.cache
+C:\Users\Andrey\source\repos\UserClient\UserClient\bin\Debug\UserClient.exe.config
+C:\Users\Andrey\source\repos\UserClient\UserClient\bin\Debug\UserClient.exe
+C:\Users\Andrey\source\repos\UserClient\UserClient\bin\Debug\UserClient.pdb
+C:\Users\Andrey\source\repos\UserClient\UserClient\obj\Debug\UserClient.exe
+C:\Users\Andrey\source\repos\UserClient\UserClient\obj\Debug\UserClient.pdb
+C:\Users\Andrey\source\repos\UserClient\UserClient\obj\Debug\UserClient.Superchat.resources
+C:\Users\Andrey\source\repos\UserClient\UserClient\obj\Debug\UserClient.csproj.GenerateResource.cache
