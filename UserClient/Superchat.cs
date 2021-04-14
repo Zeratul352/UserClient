@@ -51,7 +51,7 @@ namespace UserClient
                 client.Connect(host, port); //подключение клиента
                 stream = client.GetStream(); // получаем поток
 
-                string message = userName + ";endmessage;status:login;sender:" + userName + ";timestamp:" + Lamporttime.ToString();
+                string message = userName + ";endmessage;status:login;sender:" + userName + ";target:all;timestamp:" + Lamporttime.ToString();
                 byte[] data = Encoding.Unicode.GetBytes(message);
                 //Progress<string> progress = new Progress<string>(text => chat.Text += text);
                 Thread receiveThread = new Thread(new ThreadStart(ReceiveMessage));
@@ -162,7 +162,7 @@ namespace UserClient
             }
             if(text != userName)
             {
-                string message = userName + " is in the chat!" + FormatLine("send", text);
+                string message = userName + FormatLine("login", text);
                 byte[] data = Encoding.Unicode.GetBytes(message);
                 stream.Write(data, 0, data.Length);
             }
