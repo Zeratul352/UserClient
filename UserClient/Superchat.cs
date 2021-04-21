@@ -64,6 +64,7 @@ namespace UserClient
                 Usermessage.Enabled = true;
                 selectuser.Enabled = true;
                 Send_button.Enabled = true;
+                
                 Connect_button.Enabled = false;
                 //Console.WriteLine("Добро пожаловать, {0}", userName);
                 //SendMessage();
@@ -131,8 +132,8 @@ namespace UserClient
                         }
                         if (time > Lamporttime)
                         {
-                            Lamporttime = time;
-                            timelabel.Text = "Lamport time: " + Lamporttime.ToString();
+                            UpdateLamportTime(time);
+                            
                         }
                     }
                     catch
@@ -185,6 +186,20 @@ namespace UserClient
             selectuser.Items.Add(text);
         }
 
+        public void UpdateLamportTime(int newtime)
+        {
+            if (this.InvokeRequired)
+            {
+                this.Invoke(new Action<int>(UpdateLamportTime), new object[] { newtime });
+                return;
+            }
+
+            Lamporttime = newtime;
+            timelabel.Text = "Lamport time: " + Lamporttime.ToString();
+
+        }
+
+
         static void Disconnect()
         {
             if (stream != null)
@@ -196,11 +211,16 @@ namespace UserClient
 
         private void Send_button_Click(object sender, EventArgs e)
         {
-            Lamporttime++;
-            timelabel.Text = "Lamport time: " + Lamporttime.ToString();
+            UpdateLamportTime(Lamporttime + 1);
             string message = Usermessage.Text + FormatLine("send");
             byte[] data = Encoding.Unicode.GetBytes(message);
             stream.Write(data, 0, data.Length);
+        }
+
+        private void InternalEvent_Click(object sender, EventArgs e)
+        {
+            UpdateLamportTime(Lamporttime + 1);
+            WriteMessage("An internal event has taken place!");
         }
     }
 }

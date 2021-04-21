@@ -35,6 +35,7 @@
             this.Usernamebox = new System.Windows.Forms.TextBox();
             this.Connect_button = new System.Windows.Forms.Button();
             this.timelabel = new System.Windows.Forms.Label();
+            this.InternalEvent = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // chat
@@ -114,11 +115,23 @@
             this.timelabel.TabIndex = 6;
             this.timelabel.Text = "Lamport time: 1";
             // 
+            // InternalEvent
+            // 
+            this.InternalEvent.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.InternalEvent.Location = new System.Drawing.Point(561, 203);
+            this.InternalEvent.Name = "InternalEvent";
+            this.InternalEvent.Size = new System.Drawing.Size(227, 75);
+            this.InternalEvent.TabIndex = 7;
+            this.InternalEvent.Text = "Internal event";
+            this.InternalEvent.UseVisualStyleBackColor = true;
+            this.InternalEvent.Click += new System.EventHandler(this.InternalEvent_Click);
+            // 
             // Superchat
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.InternalEvent);
             this.Controls.Add(this.timelabel);
             this.Controls.Add(this.Connect_button);
             this.Controls.Add(this.Usernamebox);
@@ -143,5 +156,6 @@
         private System.Windows.Forms.TextBox Usernamebox;
         private System.Windows.Forms.Button Connect_button;
         private System.Windows.Forms.Label timelabel;
+        private System.Windows.Forms.Button InternalEvent;
     }
 }
