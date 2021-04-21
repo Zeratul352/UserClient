@@ -17,7 +17,7 @@ namespace UserClient
     {
 
         static string userName;
-        private const string host = "192.168.10.64";//193.138.146.14 //192.168.10.64
+        private const string host = "193.138.146.14";//193.138.146.14 //192.168.10.64
         private const int port = 4444;
         static TcpClient client;
         static NetworkStream stream;
