@@ -17,10 +17,12 @@ namespace UserClient
     {
 
         static string userName;
-        private const string host = "193.138.146.14";//193.138.146.14 //192.168.10.64
+        private const string host = "192.168.10.64";//193.138.146.14 //192.168.10.64
         private const int port = 4444;
         static TcpClient client;
         static NetworkStream stream;
+        static Random random = new Random();
+        static System.Threading.Timer randomtimer;
 
         private int Lamporttime = 1;
         private List<string> Usernames;
@@ -29,6 +31,7 @@ namespace UserClient
             InitializeComponent();
             Usernames = new List<string>();
             chat.Text = "";
+            randomtimer = new System.Threading.Timer(TimerCallback, null, random.Next(10000, 20000), -1);
         }
 
         private void Superchat_Load(object sender, EventArgs e)
@@ -91,7 +94,7 @@ namespace UserClient
             {
                 try
                 {
-                    byte[] data = new byte[256]; // буфер для получаемых данных
+                    byte[] data = new byte[1024]; // буфер для получаемых данных
                     StringBuilder builder = new StringBuilder();
                     int bytes = 0;
                     do
@@ -221,6 +224,13 @@ namespace UserClient
         {
             UpdateLamportTime(Lamporttime + 1);
             WriteMessage("An internal event has taken place!");
+        }
+
+        private void TimerCallback(object obj)
+        {
+            UpdateLamportTime(Lamporttime + 1);
+            WriteMessage("An internal random event has taken place!");
+            randomtimer.Change(random.Next(10000, 30000), -1);
         }
     }
 }
