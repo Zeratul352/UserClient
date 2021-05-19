@@ -86,13 +86,13 @@ namespace UserClient
         {
             if (target == "notarget")
                 target = selectuser.Text;
-            if (selectuser.Text == "all")
+            if (target == "all")
                 status = "broadcast";
             return ";endmessage;status:" + status + ";sender:" + userName + ";target:" + target + ";timestamp:" + Lamporttime.ToString();
         }
         private void SendMessage(string text, string status, string target = "notarget")
         {
-            string message = text + FormatLine("login", target);
+            string message = text + FormatLine(status, target);
             byte[] data = Encoding.Unicode.GetBytes(message);
             stream.Write(data, 0, data.Length);
         }
@@ -149,6 +149,7 @@ namespace UserClient
                             if(action == "sendtoken")
                             {
                                 crittoken = true;
+                                WriteMessage("Can enter critical zone now!");
                                 if (needcritprocess)
                                 {
                                     CritProcess();
@@ -159,6 +160,7 @@ namespace UserClient
                                 if(crittoken == true)
                                 {
                                     crittoken = false;
+                                    WriteMessage("Can't enter critical zone no more!");
                                     SendMessage("sendtoken " + queuenumber.ToString(), "critzone", sender);
                                 }
                             }
@@ -206,6 +208,7 @@ namespace UserClient
             }
             WriteMessage("Calculations finished! Leaving critical zone");
             needcritprocess = false;
+            UpdateQueue();
         }
         public void UpdateQueue()
         {
