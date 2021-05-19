@@ -17,13 +17,16 @@ namespace UserClient
     {
 
         static string userName;
-        private const string host = "193.138.146.14";//193.138.146.14 //192.168.10.64
+        private const string host = "192.168.10.35";//193.138.146.14 //192.168.10.64
         private const int port = 4444;
         static TcpClient client;
         static NetworkStream stream;
         static Random random = new Random();
         static System.Threading.Timer randomtimer;
 
+        private int queuenumber = 1;
+        private bool crittoken = true;
+        private bool needcritprocess = false;
         private int Lamporttime = 1;
         private List<string> Usernames;
         public Superchat()
@@ -87,6 +90,12 @@ namespace UserClient
                 status = "broadcast";
             return ";endmessage;status:" + status + ";sender:" + userName + ";target:" + target + ";timestamp:" + Lamporttime.ToString();
         }
+        private void SendMessage(string text, string status, string target = "notarget")
+        {
+            string message = text + FormatLine("login", target);
+            byte[] data = Encoding.Unicode.GetBytes(message);
+            stream.Write(data, 0, data.Length);
+        }
         
         private void ReceiveMessage()
         {
@@ -132,6 +141,37 @@ namespace UserClient
                         else if (status == "recieve")
                         {
                             WriteMessage('\n' + sender + " : " + text + '\n');
+                        }else if(status == "critzone")
+                        {
+                            var elements = text.Split(' ');
+                            var action = elements[0];
+                            int foregnnumber = Convert.ToInt32(elements[1]);
+                            if(action == "sendtoken")
+                            {
+                                crittoken = true;
+                                if (needcritprocess)
+                                {
+                                    CritProcess();
+                                }
+                            }
+                            else if(action == "asktoken")
+                            {
+                                if(crittoken == true)
+                                {
+                                    crittoken = false;
+                                    SendMessage("sendtoken " + queuenumber.ToString(), "critzone", sender);
+                                }
+                            }
+                            else if(action == "askqueue")
+                            {
+                                SendMessage("sendqueue " + queuenumber.ToString(), "critzone", sender);
+                            }else if(action == "sendqueue")
+                            {
+                                if(foregnnumber >= queuenumber)
+                                {
+                                    queuenumber = foregnnumber + 1;
+                                }
+                            }
                         }
                         if (time > Lamporttime)
                         {
@@ -151,6 +191,30 @@ namespace UserClient
                     Disconnect();
                 }
             }
+        }
+        public void CritProcess()
+        {
+            if (crittoken == false)
+                return;
+            int duration = random.Next(5, 15);
+            WriteMessage("Entering critical zone!");
+            for(int i = 0; i < duration; i++)
+            {
+                Thread.Sleep(500);
+                WriteMessage("Calculations in process...");
+                Thread.Sleep(500);
+            }
+            WriteMessage("Calculations finished! Leaving critical zone");
+            needcritprocess = false;
+        }
+        public void UpdateQueue()
+        {
+            foreach(var user in selectuser.Items)
+            {
+                if(user.ToString() != "all")
+                    SendMessage("askqueue " + queuenumber.ToString(), "critzone", user.ToString());
+            }
+            
         }
         public void WriteMessage(string text)
         {
@@ -231,6 +295,22 @@ namespace UserClient
             UpdateLamportTime(Lamporttime + 1);
             WriteMessage("An internal random event has taken place!");
             randomtimer.Change(random.Next(10000, 30000), -1);
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            needcritprocess = true;
+            if (crittoken)
+                CritProcess();
+            else
+            {
+                foreach (var user in selectuser.Items)
+                {
+                    if (user.ToString() != "all")
+                        SendMessage("asktoken " + queuenumber.ToString(), "critzone", user.ToString());
+                }
+                
+            }
         }
     }
 }
